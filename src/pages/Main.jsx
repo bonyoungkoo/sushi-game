@@ -10,10 +10,6 @@ const Main = () => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    console.log(index)
-  }, [index]);
-
-  useEffect(() => {
     const Engine = Matter.Engine;
     const Render = Matter.Render;
     const Runner = Matter.Runner;
@@ -85,12 +81,14 @@ const Main = () => {
           World.add(world, body);
         }
 
-        if (!isActivated) {
+        console.log('collision', collision); 
 
-          if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
-            console.log('fail')
-          }
-        }
+        // if (!isActivated) {
+
+        //   if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
+        //     console.log('fail')
+        //   }
+        // }
 
       })
     })
