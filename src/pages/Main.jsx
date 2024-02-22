@@ -1,13 +1,18 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import * as Matter from 'matter-js';
 import { SUSHI } from '../constants/sushi'
+import { useNavigate } from 'react-router-dom';
 
 const Main = () => {
+  const navigate = useNavigate();
   const canvasRef = useRef(null);
   const countRef = useRef(0);
   const indexRef = useRef(0);
-  const isActivated = useRef(true); 
+  const collisionIndexRef = useRef(0);
+  const isDropping = useRef(false); 
   const [index, setIndex] = useState(0);
+  const [collisionIndex, setCollisionIndex] = useState(0);
+  const [maxIndex, setMaxIndex] = useState(0);
 
   useEffect(() => {
     const Engine = Matter.Engine;
@@ -24,32 +29,36 @@ const Main = () => {
       options: {
         width: 620,
         height: 850,
-        background: '#D2CCAA',
-        wireframes: false
+        background: 'rgb(0, 0, 0, 0.3)',
+        wireframeBackground: 'transparent',
+        wireframes: false,
+        chamfer: {
+          radius: [0, 0, 50, 50]
+        }
       }
     });
 
     const world = engine.world;
-    const left = Bodies.rectangle(15, 395, 30, 850, {
+    const left = Bodies.rectangle(5, 430, 15, 850, {
       isStatic: true,
-      render: { fillStyle: "#3e1c00" }
+      render: { fillStyle: "transparent" },
     })
 
-    const right = Bodies.rectangle(605, 395, 30, 850, {
+    const right = Bodies.rectangle(615, 430, 15, 850, {
       isStatic: true,
-      render: { fillStyle: "#3e1c00" }
+      render: { fillStyle: "transparent" }
     })
 
-    const bottom = Bodies.rectangle(310, 835, 650, 30, {
+    const bottom = Bodies.rectangle(320, 865, 650, 50, {
       isStatic: true,
-      render: { fillStyle: "#3e1c00" }
+      render: { fillStyle: "transparent" },
     })
 
-    const top = Bodies.rectangle(310, 50, 620, 2, {
+    const top = Bodies.rectangle(310, 100, 620, 5, {
       name: 'top',
       isStatic: true,
       isSensor: true,
-      render: { fillStyle: "#3e1c00" }
+      render: { fillStyle: "rgba(255, 255, 255, 0.5)" }
     })
 
     Matter.World.add(world, [left, right, bottom, top])
@@ -57,10 +66,23 @@ const Main = () => {
     Runner.run(engine);
     Render.run(render);
 
+    Events.on(engine, 'collisionActive', (event) => {
+      event.pairs.forEach(collision => {
+        if (!isDropping.current) {
+          if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
+            Events.off(engine, 'collisionActive');
+            alert('Game Over!')
+            navigate('/');
+          }
+        }
+      });
+    });
+
     Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach(collision => {
         if (collision.bodyA.index === collision.bodyB.index) {
           if (collision.bodyA.index === SUSHI.length - 1) {
+            alert('Game Clear!')
             return;
           }
           World.remove(world, [collision.bodyA, collision.bodyB]);
@@ -69,7 +91,6 @@ const Main = () => {
             index: collision.bodyA.index + 1,
             render: {
               sprite: { 
-                // texture: new URL(`src/assets/${sushi.name}.png`).href,
                 texture: `src/assets/${newSushi.name}.png`,
                 xScale: newSushi.xScale,
                 yScale: newSushi.yScale
@@ -79,46 +100,42 @@ const Main = () => {
           });
 
           World.add(world, body);
+          setCollisionIndex(collision.bodyA.index + 1);
         }
-
-        console.log('collision', collision); 
-
-        // if (!isActivated) {
-
-        //   if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
-        //     console.log('fail')
-        //   }
-        // }
-
       })
     })
 
-    const mouseConstraint = Matter.MouseConstraint.create(
-      engine, {canvas: canvasRef.current}
-    );
+    const mouse = Matter.Mouse.create(render.canvas);
+    const mouseConstraint = Matter.MouseConstraint.create(engine, {
+      mouse,
+    });
 
     Events.on(mouseConstraint, 'mousedown', (e) => {
-      if (e.mouse.position.x < 15 || e.mouse.position.x > 605) {
+      if (e.mouse.position.x < 10 || e.mouse.position.x > 610) {
         return;
       }
-      if (!isActivated.current) {
+      if (isDropping.current) {
         return;
       }
-      isActivated.current = false;
+      isDropping.current = true;
       dropSushi(World, world, Bodies, e.mouse.position.x);
       setTimeout(() => {
-        isActivated.current = true;
+        isDropping.current = false;
       }, 1000);
     })
 
   }, []);
 
-  const dropSushi = useCallback((World, world, Bodies, position) => {
-    if (position.x < 15 || position.x > 605) {
+  useEffect(() => {
+    if (maxIndex > collisionIndex) {
       return;
     }
+    setMaxIndex(collisionIndex);
+  }, [collisionIndex]);
+
+  const dropSushi = useCallback((World, world, Bodies, position) => {
     
-    const body = Bodies.circle(position, 20, SUSHI[indexRef.current].radius, {
+    const body = Bodies.circle(position, 100, SUSHI[indexRef.current].radius, {
       index: indexRef.current,
       render: {
         sprite: { 
@@ -131,21 +148,29 @@ const Main = () => {
     })
     World.add(world, body);
     countRef.current = countRef.current + 1;
-    handleIndex();
+    changeIndex();
   }, []);
 
-  const handleIndex = useCallback(() => {
-    const nextIndex = Math.floor(Math.random() * (countRef.current < 3 ? 0 : 5));
+  const changeIndex = useCallback(() => {
+    const nextIndex = Math.floor(Math.random() * (countRef.current < 1 ? 0 : 5));
     indexRef.current = nextIndex;
     setIndex(nextIndex)
   }, []);
 
   return (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-      <div style={{ position: 'absolute', width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <img src={`src/assets/${SUSHI[index]?.name}.png`} style={{ width: 50, height: 50, opacity: 0.5 }} />
+    <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('src/assets/bg.jpeg')`, backgroundSize: 'cover' }}>
+      <div style={{ width: '340px', height: '480px', marginTop: 50 }}>
+        <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center' }}>
+          <img src={`src/assets/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
+        </div>
+        <canvas style={{ width: '340px' }} ref={canvasRef} />
       </div>
-      <canvas ref={canvasRef} />
+
+      <div style={{ width: '340px', marginTop: 50 }}>
+        <ul style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`src/assets/${v?.name}.png`} style={{ width: 25 }} /></li>)}
+        </ul>
+      </div>
     </div>
   );
 };
