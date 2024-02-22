@@ -158,7 +158,7 @@ const Main = () => {
   }, []);
 
   return (
-    <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('src/assets/bg.jpeg')`, backgroundSize: 'cover' }}>
+    <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('./bg.jpeg')`, backgroundSize: 'cover' }}>
       <div style={{ width: '340px', height: '480px', marginTop: 50 }}>
         <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center' }}>
           <img src={`./${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
