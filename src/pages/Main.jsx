@@ -98,7 +98,8 @@ const Main = () => {
             },
             restitution: 0.2
           });
-
+          const audio = new Audio('./collision.mp3');
+          audio.play();
           World.add(world, body);
           setCollisionIndex(collision.bodyA.index + 1);
         }
@@ -134,7 +135,8 @@ const Main = () => {
   }, [collisionIndex]);
 
   const dropSushi = useCallback((World, world, Bodies, position) => {
-    
+    const audio = new Audio('./drop.mp3');
+    audio.play();
     const body = Bodies.circle(position, 100, SUSHI[indexRef.current].radius, {
       index: indexRef.current,
       render: {
