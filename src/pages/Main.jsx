@@ -91,7 +91,7 @@ const Main = () => {
             index: collision.bodyA.index + 1,
             render: {
               sprite: { 
-                texture: `src/assets/${newSushi.name}.png`,
+                texture: `./${newSushi.name}.png`,
                 xScale: newSushi.xScale,
                 yScale: newSushi.yScale
               }
@@ -139,7 +139,7 @@ const Main = () => {
       index: indexRef.current,
       render: {
         sprite: { 
-          texture: `src/assets/${SUSHI[indexRef.current].name}.png`,
+          texture: `./${SUSHI[indexRef.current].name}.png`,
           xScale: SUSHI[indexRef.current].xScale,
           yScale: SUSHI[indexRef.current].yScale
         }
@@ -161,14 +161,14 @@ const Main = () => {
     <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('src/assets/bg.jpeg')`, backgroundSize: 'cover' }}>
       <div style={{ width: '340px', height: '480px', marginTop: 50 }}>
         <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center' }}>
-          <img src={`src/assets/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
+          <img src={`./${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
         </div>
         <canvas style={{ width: '340px' }} ref={canvasRef} />
       </div>
 
       <div style={{ width: '340px', marginTop: 50 }}>
         <ul style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`src/assets/${v?.name}.png`} style={{ width: 25 }} /></li>)}
+          {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`./${v?.name}.png`} style={{ width: 25 }} /></li>)}
         </ul>
       </div>
     </div>
