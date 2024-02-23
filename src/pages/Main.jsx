@@ -241,7 +241,7 @@ const Main = () => {
 
       { isGameOver &&
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', width: '100dvw', height: '100dvh', backgroundColor: 'rgba(0, 0, 0, 0.5)', top: 0 }}>
-          <h1 style={{ textAlign: 'center', fontSize: 48, fontWeight: '700', color: '#FFFFFF' }}>Game Over!</h1>
+          <h1 style={{ textAlign: 'center', fontSize: 48, fontWeight: '700', color: '#FFFFFF' }}>Game Over</h1>
           <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>SCORE</p>
           <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{score}</p>
           <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: '#FFFFFF', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
