@@ -8,17 +8,19 @@ import { useTimer } from '../hooks/useTimer';
 const Main = () => {
   const {elapsedTime, start, pause, reset} = useTimer();
   const [isStart, setIsStart] = useState(false);
-  const [isMute, setIsMute] = useState(true);
+  const [isMute, setIsMute] = useState(false);
   const [score, setScore] = useState(0);
   const canvasRef = useRef(null);
   const countRef = useRef(0);
   const indexRef = useRef(0);
-  const muteRef = useRef(true);
+  const muteRef = useRef(false);
   const isDropping = useRef(false); 
   const [index, setIndex] = useState(0);
   const [collisionIndex, setCollisionIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);
   const baseURL = import.meta.env.VITE_BASE_URL;
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isGameClear, setIsGameClear] = useState(false);
 
   useEffect(() => {
     if (!isStart) {
@@ -80,8 +82,8 @@ const Main = () => {
         if (!isDropping.current) {
           if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
             Events.off(engine, 'collisionActive');
-            alert('Game Over!');
-            location.reload();
+            pause();
+            setIsGameOver(true);
           }
         }
       });
@@ -91,7 +93,8 @@ const Main = () => {
       event.pairs.forEach(collision => {
         if (collision.bodyA.index === collision.bodyB.index) {
           if (collision.bodyA.index === SUSHI.length - 1) {
-            alert('Game Clear!')
+            pause();
+            setIsGameClear(true)
             return;
           }
           World.remove(world, [collision.bodyA, collision.bodyB]);
@@ -143,6 +146,20 @@ const Main = () => {
   }, [isMute]);
 
   useEffect(() => {
+    if (isGameClear) {
+      const audio = new Audio(`${baseURL}/alert.mp3`);
+      audio.play();
+    }
+  }, [isGameClear]);
+
+  useEffect(() => {
+    if (isGameOver) {
+      const audio = new Audio(`${baseURL}/alert.mp3`);
+      audio.play();
+    }
+  }, [isGameOver]);
+
+  useEffect(() => {
     setScore(prev => prev + (5*collisionIndex));
     if (maxIndex > collisionIndex) {
       return;
@@ -183,43 +200,65 @@ const Main = () => {
   }, []);
 
   return (
-    <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
-      {
-        isStart ? (
-          <>
-            <div style={{ width: '340px', height: '480px', marginTop: 10 }}>
-              <div style={{ padding: 10, display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', width: '30%' }}>
-                  <div style={{ color: '#FFFFFF', fontWeight: '400' }}>SCORE</div>
-                  <div style={{ marginLeft: 10, color: '#FFFFFF', fontWeight: '700' }}>{score}</div>
+    <>
+      <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
+        {
+          isStart ? (
+            <>
+              <div style={{ width: '340px', height: '480px', marginTop: 10 }}>
+                <div style={{ padding: 10, display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', width: '30%' }}>
+                    <div style={{ color: '#FFFFFF', fontWeight: '400' }}>SCORE</div>
+                    <div style={{ marginLeft: 10, color: '#FFFFFF', fontWeight: '700' }}>{score}</div>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '30%', color: '#FFFFFF', fontWeight: 799 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '30%' }}>
+                    {
+                      isMute ? <HiSpeakerXMark size={20} fill={'#FFF'} onClick={() => setIsMute(false)} /> : <HiSpeakerWave size={20} fill={'#FFF'} onClick={() => setIsMute(true)} />
+                    }
+                  </div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center', width: '30%', color: '#FFFFFF', fontWeight: 799 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', width: '30%' }}>
-                  {
-                    isMute ? <HiSpeakerXMark size={20} fill={'#FFF'} onClick={() => setIsMute(false)} /> : <HiSpeakerWave size={20} fill={'#FFF'} onClick={() => setIsMute(true)} />
-                  }
+                <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center', marginTop: 5 }}>
+                  <img src={`${baseURL}/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
                 </div>
+                <canvas style={{ width: '340px' }} ref={canvasRef} />
               </div>
-              <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center', marginTop: 5 }}>
-                <img src={`${baseURL}/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
-              </div>
-              <canvas style={{ width: '340px' }} ref={canvasRef} />
-            </div>
 
-            <div style={{ width: '340px', marginTop: 50 }}>
-              <ul style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`${baseURL}/${v?.name}.png`} style={{ width: 25 }} /></li>)}
-              </ul>
+              <div style={{ width: '340px', marginTop: 50 }}>
+                <ul style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`${baseURL}/${v?.name}.png`} style={{ width: 25 }} /></li>)}
+                </ul>
+              </div>
+            </>
+          ) : (
+            <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
+              <img src={`${baseURL}/salmon.png`} style={{ width: 200, marginBottom: 100 }} />
+              <button style={{ textAlign: 'center', height: 60, width: 250, fontSize: 24, backgroundColor: 'rgba(0, 0, 0, 0.7)', color: '#FFFFFF', fontWeight: '700', cursor: 'pointer', borderRadius: 25 }} onClick={onClickGameStart}>Game Start</button>
             </div>
-          </>
-        ) : (
-          <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
-            <img src={`${baseURL}/salmon.png`} style={{ width: 200, marginBottom: 100 }} />
-            <button style={{ fontSize: 24, color: '#FFFFFF', fontWeight: '700', cursor: 'pointer' }} onClick={onClickGameStart}>Game Start</button>
-          </div>
-        )
+          )
+        }
+      </div>
+
+      { isGameOver &&
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', width: '100dvw', height: '100dvh', backgroundColor: 'rgba(0, 0, 0, 0.5)', top: 0 }}>
+          <h1 style={{ textAlign: 'center', fontSize: 48, fontWeight: '700', color: '#FFFFFF' }}>Game Over!</h1>
+          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>SCORE</p>
+          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{score}</p>
+          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: '#FFFFFF', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
+        </div>
       }
-    </div>
+
+      { isGameClear &&
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', width: '100dvw', height: '100dvh', backgroundColor: 'rgba(0, 0, 0, 0.5)', top: 0 }}>
+          <h1 style={{ textAlign: 'center', fontSize: 48, fontWeight: '700', color: '#FFFFFF' }}>Game Clear!</h1>
+          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>SCORE</p>
+          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{score}</p>
+          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>TIME</p>
+          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</p>
+          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: '#FFFFFF', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
+        </div>
+      }
+    </>
   );
 };
 
