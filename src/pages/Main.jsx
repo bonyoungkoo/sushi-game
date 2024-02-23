@@ -4,8 +4,10 @@ import { SUSHI } from '../constants/sushi'
 import { useNavigate } from 'react-router-dom';
 import { GoMute } from "react-icons/go";
 import { GoUnmute } from "react-icons/go";
+import { useTimer } from '../hooks/useCountdown';
 
 const Main = () => {
+  const {elapsedTime, start, pause, reset} = useTimer();
   const [isStart, setIsStart] = useState(false);
   const [isMute, setIsMute] = useState(true);
   const [score, setScore] = useState(0);
@@ -20,6 +22,10 @@ const Main = () => {
   const [collisionIndex, setCollisionIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);
   const baseURL = import.meta.env.VITE_BASE_URL;
+
+  useEffect(() => {
+    start();
+  }, [])
 
   useEffect(() => {
     if (!isStart) {
@@ -82,6 +88,7 @@ const Main = () => {
           if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
             Events.off(engine, 'collisionActive');
             alert('Game Over!')
+            reset()
             setIsStart(false)
           }
         }
@@ -185,13 +192,16 @@ const Main = () => {
           <>
             <div style={{ width: '340px', height: '480px', marginTop: 10 }}>
               <div style={{ padding: 10, display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex', width: '30%' }}>
                   <div style={{ color: '#FFFFFF', fontWeight: '400' }}>SCORE</div>
                   <div style={{ marginLeft: 10, color: '#FFFFFF', fontWeight: '700' }}>{score}</div>
                 </div>
-                {
-                  isMute ? <GoMute size={20} fill={'#FFF'} onClick={() => setIsMute(false)} /> : <GoUnmute size={20} fill={'#FFF'} onClick={() => setIsMute(true)} />
-                }
+                <div style={{ display: 'flex', justifyContent: 'center', width: '30%', color: '#FFFFFF', fontWeight: 799 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', width: '30%' }}>
+                  {
+                    isMute ? <GoMute size={20} fill={'#FFF'} onClick={() => setIsMute(false)} /> : <GoUnmute size={20} fill={'#FFF'} onClick={() => setIsMute(true)} />
+                  }
+                </div>
               </div>
               <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center' }}>
                 <img src={`${baseURL}/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
