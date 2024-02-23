@@ -8,7 +8,7 @@ function App() {
     <>
       <BrowserRouter basename='/sushi-game'>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/main" element={<Main />} />
         </Routes>
       </BrowserRouter>

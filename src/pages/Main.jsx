@@ -72,7 +72,7 @@ const Main = () => {
           if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
             Events.off(engine, 'collisionActive');
             alert('Game Over!')
-            navigate('/');
+            navigate('/home');
           }
         }
       });
