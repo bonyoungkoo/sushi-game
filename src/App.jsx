@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-      <BrowserRouter basename="/sushi-game">
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/main" element={<Main />} />
