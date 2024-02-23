@@ -80,9 +80,8 @@ const Main = () => {
         if (!isDropping.current) {
           if (collision.bodyA.name === 'top' || collision.bodyB.name === 'top') {
             Events.off(engine, 'collisionActive');
-            alert('Game Over!')
-            reset()
-            setIsStart(false)
+            alert('Game Over!');
+            location.reload();
           }
         }
       });
@@ -201,7 +200,7 @@ const Main = () => {
                   }
                 </div>
               </div>
-              <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center' }}>
+              <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center', marginTop: 5 }}>
                 <img src={`${baseURL}/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
               </div>
               <canvas style={{ width: '340px' }} ref={canvasRef} />
