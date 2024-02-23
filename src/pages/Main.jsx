@@ -1,31 +1,24 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import * as Matter from 'matter-js';
 import { SUSHI } from '../constants/sushi'
-import { useNavigate } from 'react-router-dom';
-import { GoMute } from "react-icons/go";
-import { GoUnmute } from "react-icons/go";
-import { useTimer } from '../hooks/useCountdown';
+import { HiSpeakerXMark } from "react-icons/hi2";
+import { HiSpeakerWave } from "react-icons/hi2";
+import { useTimer } from '../hooks/useTimer';
 
 const Main = () => {
   const {elapsedTime, start, pause, reset} = useTimer();
   const [isStart, setIsStart] = useState(false);
   const [isMute, setIsMute] = useState(true);
   const [score, setScore] = useState(0);
-  const navigate = useNavigate();
   const canvasRef = useRef(null);
   const countRef = useRef(0);
   const indexRef = useRef(0);
   const muteRef = useRef(true);
-  const collisionIndexRef = useRef(0);
   const isDropping = useRef(false); 
   const [index, setIndex] = useState(0);
   const [collisionIndex, setCollisionIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);
   const baseURL = import.meta.env.VITE_BASE_URL;
-
-  useEffect(() => {
-    start();
-  }, [])
 
   useEffect(() => {
     if (!isStart) {
@@ -185,6 +178,11 @@ const Main = () => {
     setIndex(nextIndex)
   }, []);
 
+  const onClickGameStart = useCallback(() => {
+    setIsStart(true);
+    start();
+  }, []);
+
   return (
     <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
       {
@@ -199,7 +197,7 @@ const Main = () => {
                 <div style={{ display: 'flex', justifyContent: 'center', width: '30%', color: '#FFFFFF', fontWeight: 799 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', width: '30%' }}>
                   {
-                    isMute ? <GoMute size={20} fill={'#FFF'} onClick={() => setIsMute(false)} /> : <GoUnmute size={20} fill={'#FFF'} onClick={() => setIsMute(true)} />
+                    isMute ? <HiSpeakerXMark size={20} fill={'#FFF'} onClick={() => setIsMute(false)} /> : <HiSpeakerWave size={20} fill={'#FFF'} onClick={() => setIsMute(true)} />
                   }
                 </div>
               </div>
@@ -218,7 +216,7 @@ const Main = () => {
         ) : (
           <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
             <img src={`${baseURL}/salmon.png`} style={{ width: 200, marginBottom: 100 }} />
-            <button style={{ fontSize: 24, color: '#FFFFFF', fontWeight: '700', cursor: 'pointer' }} onClick={() => setIsStart(true)}>Game Start</button>
+            <button style={{ fontSize: 24, color: '#FFFFFF', fontWeight: '700', cursor: 'pointer' }} onClick={onClickGameStart}>Game Start</button>
           </div>
         )
       }
