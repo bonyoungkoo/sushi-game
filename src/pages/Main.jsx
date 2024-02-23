@@ -95,14 +95,14 @@ const Main = () => {
             index: collision.bodyA.index + 1,
             render: {
               sprite: { 
-                texture: `sushi-game/${newSushi.name}.png`,
+                texture: `./${newSushi.name}.png`,
                 xScale: newSushi.xScale,
                 yScale: newSushi.yScale
               }
             },
             restitution: 0.2
           });
-          const audio = new Audio('sushi-game/collision.mp3');
+          const audio = new Audio('./collision.mp3');
           audio.play();
           World.add(world, body);
           setCollisionIndex(collision.bodyA.index + 1);
@@ -139,13 +139,13 @@ const Main = () => {
   }, [collisionIndex]);
 
   const dropSushi = useCallback((World, world, Bodies, position) => {
-    const audio = new Audio('sushi-game/drop.mp3');
+    const audio = new Audio('./drop.mp3');
     audio.play();
     const body = Bodies.circle(position, 100, SUSHI[indexRef.current].radius, {
       index: indexRef.current,
       render: {
         sprite: { 
-          texture: `sushi-game/${SUSHI[indexRef.current].name}.png`,
+          texture: `./${SUSHI[indexRef.current].name}.png`,
           xScale: SUSHI[indexRef.current].xScale,
           yScale: SUSHI[indexRef.current].yScale
         }
@@ -164,26 +164,26 @@ const Main = () => {
   }, []);
 
   return (
-    <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('sushi-game/bg.jpeg')`, backgroundSize: 'cover' }}>
+    <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('./bg.jpeg')`, backgroundSize: 'cover' }}>
       {
         isStart ? (
           <>
             <div style={{ width: '340px', height: '480px', marginTop: 50 }}>
               <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center' }}>
-                <img src={`sushi-game/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
+                <img src={`./${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
               </div>
               <canvas style={{ width: '340px' }} ref={canvasRef} />
             </div>
 
             <div style={{ width: '340px', marginTop: 50 }}>
               <ul style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`sushi-game/${v?.name}.png`} style={{ width: 25 }} /></li>)}
+                {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`.//${v?.name}.png`} style={{ width: 25 }} /></li>)}
               </ul>
             </div>
           </>
         ) : (
-          <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('sushi-game/bg.jpeg')`, backgroundSize: 'cover' }}>
-            <img src={'sushi-game/salmon.png'} style={{ width: 200, marginBottom: 100 }} />
+          <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('./bg.jpeg')`, backgroundSize: 'cover' }}>
+            <img src={'./salmon.png'} style={{ width: 200, marginBottom: 100 }} />
             <button style={{ fontSize: 24, color: '#FFFFFF', fontWeight: '700', cursor: 'pointer' }} onClick={() => setIsStart(true)}>Game Start</button>
           </div>
         )
