@@ -101,6 +101,7 @@ const Main = () => {
         if (collision.bodyA.index === collision.bodyB.index) {
           if (collision.bodyA.index === SUSHI.length - 2) {
             pause();
+            setScore(prev => prev + 5000);
             setIsGameClear(true)
           }
           World.remove(world, [collision.bodyA, collision.bodyB]);
