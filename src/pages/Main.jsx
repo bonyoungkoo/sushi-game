@@ -99,10 +99,9 @@ const Main = () => {
     Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach(collision => {
         if (collision.bodyA.index === collision.bodyB.index) {
-          if (collision.bodyA.index === SUSHI.length - 1) {
+          if (collision.bodyA.index === SUSHI.length - 2) {
             pause();
             setIsGameClear(true)
-            return;
           }
           World.remove(world, [collision.bodyA, collision.bodyB]);
           const newSushi = SUSHI[collision.bodyA.index + 1];
@@ -261,7 +260,7 @@ const Main = () => {
           <h1 style={{ textAlign: 'center', fontSize: 48, fontWeight: '700', color: '#FFFFFF' }}>Game Over</h1>
           <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>SCORE</p>
           <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{score}</p>
-          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: '#FFFFFF', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
+          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: 'rgba(255, 255, 255, 0.7)', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
         </div>
       }
 
@@ -272,7 +271,7 @@ const Main = () => {
           <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{score}</p>
           <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>TIME</p>
           <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</p>
-          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: '#FFFFFF', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
+          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: 'rgba(255, 255, 255, 0.7)', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
         </div>
       }
     </>

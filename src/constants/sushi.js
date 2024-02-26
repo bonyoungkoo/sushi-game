@@ -30,16 +30,16 @@ export const SUSHI = [
     yScale: 0.5,
   },
   {
-    name: 'squid',
-    radius: 155/2,
-    xScale: 0.9,
-    yScale: 0.9,
+    name: 'saba',
+    radius: 160/2,
+    xScale: 0.90,
+    yScale: 0.90
   },
   {
-    name: 'taco',
-    radius: 170/2,
-    xScale: 1.65,
-    yScale: 1.65,
+    name: 'squid',
+    radius: 175/2,
+    xScale: 1.0,
+    yScale: 1.0,
   },
   {
     name: 'yellow_tail',
@@ -48,14 +48,14 @@ export const SUSHI = [
     yScale: 1.65,
   },
   {
-    name: 'saba',
+    name: 'taco',
     radius: 215/2,
-    xScale: 1.3,
-    yScale: 1.3,
+    xScale: 1.95,
+    yScale: 1.95,
   },
   {
     name: 'tuna',
-    radius: 230/2,
+    radius: 235/2,
     xScale: 0.65,
     yScale: 0.65,
   },
