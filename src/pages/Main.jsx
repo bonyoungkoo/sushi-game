@@ -67,7 +67,7 @@ const Main = () => {
       render: { fillStyle: "transparent" }
     })
 
-    const bottom = Bodies.rectangle(320, 865, 650, 50, {
+    const bottom = Bodies.rectangle(320, 875, 650, 50, {
       isStatic: true,
       render: { fillStyle: "transparent" },
     })
