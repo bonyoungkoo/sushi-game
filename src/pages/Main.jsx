@@ -23,6 +23,13 @@ const Main = () => {
   const [isGameClear, setIsGameClear] = useState(false);
 
   useEffect(() => {
+    const storage = localStorage.getItem('sushi-game');
+    if (storage) {
+      setIsMute(JSON.parse(storage).isMute);
+    }
+  }, []);
+
+  useEffect(() => {
     if (!isStart) {
       return;
     }
@@ -199,6 +206,16 @@ const Main = () => {
     start();
   }, []);
 
+  const onClickMute = useCallback(() => {
+    setIsMute(false);
+    localStorage.setItem('sushi-game', JSON.stringify({isMute: false}));
+  }, []);
+
+  const onClickUnmute = useCallback(() => {
+    setIsMute(true);
+    localStorage.setItem('sushi-game', JSON.stringify({isMute: true}));
+  }, []);
+
   return (
     <>
       <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
@@ -214,7 +231,7 @@ const Main = () => {
                   <div style={{ display: 'flex', justifyContent: 'center', width: '30%', color: '#FFFFFF', fontWeight: 799 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', width: '30%' }}>
                     {
-                      isMute ? <HiSpeakerXMark size={20} fill={'#FFF'} onClick={() => setIsMute(false)} /> : <HiSpeakerWave size={20} fill={'#FFF'} onClick={() => setIsMute(true)} />
+                      isMute ? <HiSpeakerXMark size={20} fill={'#FFF'} onClick={() => onClickMute()} /> : <HiSpeakerWave size={20} fill={'#FFF'} onClick={() => onClickUnmute()} />
                     }
                   </div>
                 </div>
