@@ -32,8 +32,8 @@ export const SUSHI = [
   {
     name: 'saba',
     radius: 160/2,
-    xScale: 0.90,
-    yScale: 0.90
+    xScale: 0.95,
+    yScale: 0.95
   },
   {
     name: 'squid',
