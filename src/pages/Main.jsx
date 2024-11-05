@@ -4,9 +4,10 @@ import { SUSHI } from '../constants/sushi'
 import { HiSpeakerXMark } from "react-icons/hi2";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { useTimer } from '../hooks/useTimer';
+import Button from '../components/Button';
 
 const Main = () => {
-  const {elapsedTime, start, pause, reset} = useTimer();
+  const {elapsedTime, start, pause} = useTimer();
   const [isStart, setIsStart] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [score, setScore] = useState(0);
@@ -59,24 +60,24 @@ const Main = () => {
     const world = engine.world;
     const left = Bodies.rectangle(5, 430, 15, 850, {
       isStatic: true,
-      render: { fillStyle: "transparent" },
+      render: { fillStyle: 'transparent' },
     })
 
     const right = Bodies.rectangle(615, 430, 15, 850, {
       isStatic: true,
-      render: { fillStyle: "transparent" }
+      render: { fillStyle: 'transparent' },
     })
 
     const bottom = Bodies.rectangle(320, 875, 650, 50, {
       isStatic: true,
-      render: { fillStyle: "transparent" },
+      render: { fillStyle: 'transparent' },
     })
 
     const top = Bodies.rectangle(310, 100, 620, 5, {
       name: 'top',
       isStatic: true,
       isSensor: true,
-      render: { fillStyle: "rgba(255, 255, 255, 0.5)" }
+      render: { fillStyle: 'rgba(255, 255, 255, 0.5)' }
     })
 
     Matter.World.add(world, [left, right, bottom, top])
@@ -218,61 +219,71 @@ const Main = () => {
 
   return (
     <>
-      <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
+      <div className="w-dvw h-dvh flex flex-col justify-center items-center" style={{ background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
         {
           isStart ? (
             <>
-              <div style={{ width: '340px', height: '480px', marginTop: 10 }}>
-                <div style={{ padding: 10, display: 'flex', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', width: '30%' }}>
-                    <div style={{ color: '#FFFFFF', fontWeight: '400' }}>SCORE</div>
-                    <div style={{ marginLeft: 10, color: '#FFFFFF', fontWeight: '700' }}>{score}</div>
+              <div className="w-[340px] h-[480px] mt-[10px]">
+                <div className="flex justify-between p-[10px] text-white font-normal">
+                  <div className="flex w-[30%]">
+                    <div>SCORE</div>
+                    <div className="ml-[10px]">{score}</div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'center', width: '30%', color: '#FFFFFF', fontWeight: 799 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</div>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '30%' }}>
+                  <div className="flex justify-center w-[30%]">{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</div>
+                  <div className="flex justify-end w-[30%]">
                     {
                       isMute ? <HiSpeakerXMark size={20} fill={'#FFF'} onClick={() => onClickMute()} /> : <HiSpeakerWave size={20} fill={'#FFF'} onClick={() => onClickUnmute()} />
                     }
                   </div>
                 </div>
-                <div style={{ position: 'absolute', width: '340px', display: 'flex', justifyContent: 'center', marginTop: 5 }}>
-                  <img src={`${baseURL}/${SUSHI[index]?.name}.png`} style={{ height: 50, opacity: 0.5 }} />
+                <div className="absolute flex w-[340px] justify-center mt-[5px]">
+                  <img src={`${baseURL}/${SUSHI[index]?.name}.png`} className="h-[50px] opacity-50" />
                 </div>
-                <canvas style={{ width: '340px' }} ref={canvasRef} />
+                <canvas className="w-[340px]" ref={canvasRef} />
               </div>
 
-              <div style={{ width: '340px', marginTop: 50 }}>
-                <ul style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                  {SUSHI.map((v, i) => <li key={`${i}`} style={{ display: 'flex', padding: 5, opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}><img src={`${baseURL}/${v?.name}.png`} style={{ width: 25 }} /></li>)}
+              <div className="w-[340px] mt-[50px]">
+                <ul className="flex justify-center w-[100%]">
+                  {
+                    SUSHI.map((v, i) => 
+                      <li key={`${i}`} className="flex p-[5px]" style={{ opacity: `${i < 5 ? 1 : i > maxIndex ? 0.2 : 1}` }}>
+                        <img src={`${baseURL}/${v?.name}.png`} className="w-[25px]" />
+                      </li>
+                    )
+                  }
                 </ul>
               </div>
             </>
           ) : (
-            <div style={{ width: '100dvw', height: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
-              <img src={`${baseURL}/salmon.png`} style={{ width: 200, marginBottom: 100 }} />
-              <button style={{ textAlign: 'center', height: 60, width: 250, fontSize: 24, backgroundColor: 'rgba(0, 0, 0, 0.7)', color: '#FFFFFF', fontWeight: '700', cursor: 'pointer', borderRadius: 25 }} onClick={onClickGameStart}>Game Start</button>
+            <div className="w-dvw h-dvh flex flex-col justify-center items-center" style={{background: `url('${baseURL}/bg.jpeg')`, backgroundSize: 'cover' }}>
+              <img src={`${baseURL}/salmon.png`} className="w-[200px] mb-[100px]" />
+              <Button buttonStyle={'black'} onClick={onClickGameStart} text="Game Start" />
             </div>
           )
         }
       </div>
 
       { isGameOver &&
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', width: '100dvw', height: '100dvh', backgroundColor: 'rgba(0, 0, 0, 0.5)', top: 0 }}>
-          <h1 style={{ textAlign: 'center', fontSize: 48, fontWeight: '700', color: '#FFFFFF' }}>Game Over</h1>
-          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>SCORE</p>
-          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{score}</p>
-          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: 'rgba(255, 255, 255, 0.7)', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
+        <div className="absolute top-0 flex flex-col justify-center items-center w-dvw h-dvh bg-black bg-opacity-50 text-center font-bold text-white">
+          <h1 className="text-[48px]">Game Over</h1>
+          <p className="text-[24px] mt-[50px]">SCORE</p>
+          <p className="text-[24px] mt-[10px]">{score}</p>
+          <div className="mt-[50px]">
+            <Button buttonStyle={'white'} onClick={() => location.reload()} text={'Main'} />
+          </div>
         </div>
       }
 
       { isGameClear &&
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'absolute', width: '100dvw', height: '100dvh', backgroundColor: 'rgba(0, 0, 0, 0.5)', top: 0 }}>
-          <h1 style={{ textAlign: 'center', fontSize: 48, fontWeight: '700', color: '#FFFFFF' }}>Game Clear!</h1>
-          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>SCORE</p>
-          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{score}</p>
-          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '700', color: '#FFFFFF', marginTop: 50 }}>TIME</p>
-          <p style={{ textAlign: 'center', fontSize: 24, fontWeight: '100', color: '#FFFFFF', marginTop: 10 }}>{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</p>
-          <button style={{ height: 50, textAlign: 'center', width: 200, fontSize: 24, fontWeight: '700', backgroundColor: 'rgba(255, 255, 255, 0.7)', color: '#000', borderRadius: 20, marginTop: 50 }} onClick={() => location.reload()} >Main</button>
+        <div className="absolute top-0 flex flex-col justify-center items-center w-dvw h-dvh bg-black bg-opacity-50 text-center font-bold text-white">
+          <h1 className="text-[48px]">Game Clear!</h1>
+          <p className="text-[24px] mt-[50px]">SCORE</p>
+          <p className="text-[24px] mt-[10px]">{score}</p>
+          <p className="text-[24px] mt-[50px]">TIME</p>
+          <p className="text-[24px] mt-[10px]">{Math.floor(elapsedTime/60).toString().padStart(2, '0')} : {(elapsedTime%60).toString().padStart(2, '0')}</p>
+          <div className="mt-[50px]">
+            <Button buttonStyle={'white'} onClick={() => location.reload()} text={'Main'} />
+          </div>
         </div>
       }
     </>
